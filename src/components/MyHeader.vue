@@ -36,7 +36,9 @@ header{
     height: 80px;
     padding: 10px;
     display: flex;
+    align-items: center;
     background-color: #2e3a46;
+    
 }
 
 </style>
