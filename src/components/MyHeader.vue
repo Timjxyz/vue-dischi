@@ -4,6 +4,12 @@
             :key="index"
             :img="logo.src" 
             :text="logo.titolo" />
+    <select v-model="selectedGenre" @change="$emit('selectedGenreEvt',selectedGenre)">
+        <option value="">Seleziona un genere</option>
+        <option v-for="(genre, index) in genresList" :value="genre" :key="index">{{genre}}</option>
+
+    </select>
+
 </header>
   
 </template>
@@ -13,6 +19,10 @@
 import MyLogo from "./partials/MyLogo.vue"
 export default {
     name:"MyHeader",
+    props:{
+        'genresList':Array,
+
+    },
 
     components:{
         MyLogo
@@ -25,7 +35,8 @@ export default {
                    titolo:"Logo mtv"
                 }
 
-            ]
+            ],
+            selectedGenre:'',
         }
     }
 }
@@ -36,6 +47,7 @@ header{
     height: 80px;
     padding: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     background-color: #2e3a46;
     

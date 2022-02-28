@@ -8,9 +8,9 @@
             <div class="row">
                 
                     <OneAlbum 
-                        v-for="(album, index) in listaAlbum" 
+                        v-for="(discItem, index) in filteredDisc" 
                         :key="index" 
-                        :album="album" 
+                        :album="discItem" 
                     />
                 
             </div>
@@ -27,40 +27,64 @@ export default {
     components:{
         OneAlbum
     },
+    props:{
+        'selectedGenre':String
+    },
     data() {
         return {
-            listaAlbum: [],
+            discs: [],
+            genres:[],
             endpoint: 'https://flynn.boolean.careers/exercises/api/array/music',
             loadingInProgress: true,
         }
     },
-    methods: {
-        getAlbum() {
-            
-            // Make a request for a user with a given ID
-            axios.get(this.endpoint)
-            .then((response) => {
-                this.listaAlbum = response.data.response;
-                this.loadingInProgress = false;
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
+    computed:{
+        filteredDisc(){
+            if(this.selectedGenre==""){
+                return this.discs;
+            }else{
+
+            return this.discs.filter(disc=>{
+                return disc.genre==this.selectedGenre;
             });
+            }
         }
     },
+    
     created() {
         this.loadingInProgress=true
+           
+        // Make a request for a user with a given ID
+        axios
+        .get(this.endpoint)
+        
+        .then((response) => {
+            this.discs = response.data.response;
+            this.loadingInProgress = false;
+
+            this.discs.forEach(disc=>{
+                if(!this.genres.includes(disc.genre)){
+                    this.genres.push(disc.genre);
+                }
+                
+            })
+            this.$emit('genresReady', this.genres)
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        });
+        
+    
     },
-    mounted() {
-        this.getAlbum();
-    },
+    
 
 }
 </script>
 
 <style scoped lang="scss">
     main{
+        min-height: calc(100vh - 80px);
         padding-top: 50px;
         background-color: #1e2d3b;
         position: relative;
